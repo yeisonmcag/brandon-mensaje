@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Brandon.exe</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: #0f0;
+      font-family: monospace;
+      font-size: 20px;
+      padding: 20px;
+    }
+    #susto {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: black;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #susto img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <div id="pantalla">
+    Iniciando Brandon.exe...<br><br>
+    Analizando sistema...<br>
+  </div>
+
+  <div id="susto">
+    <img src="scream.jpg" alt="Susto">
+    <audio id="audio" src="scream.mp3" autoplay></audio>
+  </div>
+
+  <script>
+    const frases = [
+      "Brandon...",
+      "Te estoy observando...",
+      "Analizando comportamiento...",
+      "Ejecución en 5...",
+      "4...",
+      "3...",
+      "2...",
+      "1..."
+    ];
+
+    let i = 0;
+    const pantalla = document.getElementById("pantalla");
+
+    function hablar(texto) {
+      const utter = new SpeechSynthesisUtterance(texto);
+      utter.lang = "es-ES";
+      speechSynthesis.speak(utter);
+    }
+
+    function mostrarFrases() {
+      if (i < frases.length) {
+        pantalla.innerHTML += frases[i] + "<br>";
+        hablar(frases[i]);
+        i++;
+        setTimeout(mostrarFrases, 1500);
+      } else {
+        // Mostrar susto
+        document.getElementById("susto").style.display = "flex";
+        document.getElementById("audio").play();
+      }
+    }
+
+    mostrarFrases();
+  </script>
+</body>
+</html>
