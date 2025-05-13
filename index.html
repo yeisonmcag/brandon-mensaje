@@ -1,64 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>¡Sonríe Ailany!</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom right, #ffd4f2, #ffe6f7);
+      font-family: 'Comic Sans MS', cursive;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .bubbles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://i.ibb.co/vjvWwGc/bubbles.gif') repeat;
+      z-index: -1;
+      opacity: 0.3;
+    }
+    h1 {
+      color: #ff1493;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    #camera-button {
+      background: url('https://i.ibb.co/Wy9B6jS/camera-icon.png') no-repeat center;
+      background-size: contain;
+      width: 120px;
+      height: 120px;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    #countdown {
+      font-size: 50px;
+      color: #ff69b4;
+      margin-top: 20px;
+      display: none;
+    }
+    #cat-photo {
+      width: 300px;
+      opacity: 0;
+      transition: transform 3s ease-in-out, opacity 2s;
+      margin-top: 20px;
+    }
+    .zoom-in {
+      transform: scale(1.5);
+      opacity: 1;
+    }
+    .hearts {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 40px;
+      color: pink;
+      animation: float 3s infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(0) translateX(-50%); }
+      50% { transform: translateY(-20px) translateX(-50%); }
+      100% { transform: translateY(0) translateX(-50%); }
+    }
+  </style>
+</head>
 <body>
-  <div id="inicio" style="background:black; color:lime; width:100vw; height:100vh; display:flex; justify-content:center; align-items:center; flex-direction:column;">
-    <h1>Brandon.exe</h1>
-    <button onclick="empezar()" style="padding:10px 20px; font-size:20px;">Iniciar</button>
-    <audio id="audio" src="scream.mp3"></audio>
-  </div>
 
-  <div id="pantalla" style="display:none;">
-    Iniciando Brandon.exe...<br><br>
-    Analizando sistema...<br>
-  </div>
-
-  <div id="susto" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; justify-content:center; align-items:center; z-index:9999;">
-    <img src="scream.jpg" alt="Susto" style="width:100%; height:100%; object-fit:cover;">
-  </div>
+  <div class="bubbles"></div>
+  <h1>¡Hola Ailany! ¿Estás lista para tu foto? 📸</h1>
+  <button id="camera-button" aria-label="Toma la foto"></button>
+  <div id="countdown"></div>
+  <img id="cat-photo" src="https://i.ibb.co/wSgDkHQ/gato-foto.png" alt="Foto del gato">
+  <div class="hearts">💖💖💖</div>
 
   <script>
-    const frases = [
-      "Brandon...",
-      "Te estoy observando...",
-      "Analizando comportamiento...",
-      "Ejecución en 5...",
-      "4...",
-      "3...",
-      "2...",
-      "1..."
-    ];
+    const cameraBtn = document.getElementById("camera-button");
+    const countdown = document.getElementById("countdown");
+    const catPhoto = document.getElementById("cat-photo");
 
-    let i = 0;
+    const voice = new SpeechSynthesisUtterance();
+    voice.lang = "es-ES";
 
-    function hablar(texto) {
-      const utter = new SpeechSynthesisUtterance(texto);
-      utter.lang = "es-ES";
-      speechSynthesis.speak(utter);
-    }
+    cameraBtn.addEventListener("click", () => {
+      voice.text = "¡Hola Ailany! Vamos a tomarte una foto. Prepárate.";
+      speechSynthesis.speak(voice);
 
-    function mostrarFrases() {
-      if (i < frases.length) {
-        document.getElementById("pantalla").innerHTML += frases[i] + "<br>";
-        hablar(frases[i]);
-        i++;
-        setTimeout(mostrarFrases, 1500);
-      } else {
-        document.getElementById("susto").style.display = "flex";
-        document.getElementById("audio").play();  // Reproduce justo al final
-      }
-    }
+      setTimeout(() => {
+        let count = 5;
+        countdown.style.display = "block";
+        const interval = setInterval(() => {
+          countdown.textContent = count;
+          count--;
+          if (count < 0) {
+            clearInterval(interval);
+            countdown.style.display = "none";
 
-    function empezar() {
-      // Toca el audio desde aquí para activarlo desde el evento del usuario
-      const audio = document.getElementById("audio");
-      audio.play().then(() => {
-        audio.pause(); // Lo pausamos inmediatamente
-        audio.currentTime = 0;
-      });
+            // Sonido de cámara
+            const cameraSound = new Audio("https://www.fesliyanstudios.com/play-mp3/387");
+            cameraSound.play();
 
-      document.getElementById("inicio").style.display = "none";
-      document.getElementById("pantalla").style.display = "block";
-      mostrarFrases();
-    }
+            // Mostrar la foto con zoom
+            catPhoto.classList.add("zoom-in");
+
+            // Reproducir música
+            const music = new Audio("https://www.bensound.com/bensound-music/bensound-smile.mp3");
+            music.volume = 0.5;
+            music.play();
+
+            // Risa del bot
+            setTimeout(() => {
+              voice.text = "¡Jajajajaja saliste increíble Ailany! Jajajaja.";
+              speechSynthesis.speak(voice);
+            }, 3000);
+          }
+        }, 1000);
+      }, 2500);
+    });
   </script>
-</body>
 
+</body>
+</html>
 
